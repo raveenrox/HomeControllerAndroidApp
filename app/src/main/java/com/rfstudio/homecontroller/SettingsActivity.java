@@ -73,7 +73,7 @@ public class SettingsActivity extends AppCompatActivity {
                 //builder.setContentIntent(resultPendingIntent);
                 NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 notificationManager.notify(0, builder.build());
-
+test
                 break;*/
         }
     }
