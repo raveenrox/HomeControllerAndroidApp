@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.Spinner;
@@ -30,11 +31,14 @@ import java.util.Calendar;
 
 public class TaskSchedulerActivity extends AppCompatActivity {
 
+    private Activity myActivity;
+
     private int year_x, month_x, day_x;
     private int hour_x, minute_x;
 
     private TextView textDate, textTime;
     private RecyclerView recyclerView;
+    private Spinner spinner;
 
     protected ArrayList<Boolean> checkedOnStatus;
     protected ArrayList<Boolean> checkedOffStatus;
@@ -52,6 +56,8 @@ public class TaskSchedulerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_scheduler);
 
+        myActivity=this;
+
         helperDataClass = (HelperDataClass) getIntent().getSerializableExtra("helper");
         helperClass = new HelperClass(this, helperDataClass);
 
@@ -63,6 +69,7 @@ public class TaskSchedulerActivity extends AppCompatActivity {
         hour_x = cal.get(Calendar.HOUR_OF_DAY);
         minute_x = cal.get(Calendar.MINUTE);
 
+        spinner = (Spinner) findViewById(R.id.taskListSpinner);
         textDate = (TextView) findViewById(R.id.textDate);
         textTime = (TextView) findViewById(R.id.textTime);
         textDate.setText(formatDate(year_x, month_x+1, day_x));
@@ -99,7 +106,41 @@ public class TaskSchedulerActivity extends AppCompatActivity {
         recyclerView.setAdapter(tableAdapter);
 
         helperClass.decodeTaskList();
-        helperClass.reloadTasks((Spinner) findViewById(R.id.taskListSpinner));
+        helperClass.reloadTasks(spinner);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                TextView taskName = (TextView) findViewById(R.id.txtTaskName);
+                if(position!=0) {
+                    clearTask();
+                    taskName.setText(helperDataClass.taskNames.get(position));
+                    textDate.setText(helperDataClass.taskDates.get(position));
+                    textTime.setText(helperDataClass.taskTimes.get(position));
+                    for(int i=0; i<helperDataClass.taskStates.get(position).size(); i++) {
+                        int pos=0;
+                        loop: for(int j=0; j<commandNos.size(); j++) {
+                            if(commandNos.get(j).equals(helperDataClass.taskCommands.get(position).get(i))) {
+                                pos = j;
+                                break loop;
+                            }
+                        }
+                        if(helperDataClass.taskStates.get(position).get(i).equals("true")) {
+                            checkedOnStatus.set(pos, true);
+                        } else if(helperDataClass.taskStates.get(position).get(i).equals("false")) {
+                            checkedOffStatus.set(pos, true);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        clearTask();
     }
 
     @Override
@@ -218,32 +259,47 @@ public class TaskSchedulerActivity extends AppCompatActivity {
                 new Thread() {
                     public void run() {
                         if (helperClass.addTask(taskName.getText().toString(), textDate.getText().toString(), textTime.getText().toString(), getCommands())) {
-                            Toast.makeText(TaskSchedulerActivity.this, "Task Added Successfully", Toast.LENGTH_LONG).show();
+                            myActivity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(TaskSchedulerActivity.this, "Task Added Successfully", Toast.LENGTH_LONG).show();
+                                }
+                            });
                         } else {
-
-                            Toast.makeText(TaskSchedulerActivity.this, "Failed to Add Task", Toast.LENGTH_LONG).show();
+                            myActivity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(TaskSchedulerActivity.this, "Failed to Add Task", Toast.LENGTH_LONG).show();
+                                }
+                            });
                         }
                     }
                 }.start();
 
                 break;
             case R.id.clearTask:
-                for(int i=0; i<commands.size();i++)
-                {
-                    checkedOnStatus.set(i, false);
-                    checkedOffStatus.set(i, false);
-                    checkedNoneStatus.set(i, true);
-                }
-                taskName.setText("Task");
-                Calendar calendar = Calendar.getInstance();
-                textDate.setText(formatDate(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.DAY_OF_MONTH)));
-                textTime.setText(formatTime(calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE)));
-                tableAdapter.notifyItemRangeChanged(0, tableAdapter.getItemCount());
+                clearTask();
                 break;
             case R.id.removeTask:
 
                 break;
         }
+    }
+
+    private void clearTask()
+    {
+        TextView taskName = (TextView) findViewById(R.id.txtTaskName);
+        for(int i=0; i<commands.size();i++)
+        {
+            checkedOnStatus.set(i, false);
+            checkedOffStatus.set(i, false);
+            checkedNoneStatus.set(i, true);
+        }
+        taskName.setText("Task");
+        Calendar calendar = Calendar.getInstance();
+        textDate.setText(formatDate(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.DAY_OF_MONTH)));
+        textTime.setText(formatTime(calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE)));
+        tableAdapter.notifyItemRangeChanged(0, tableAdapter.getItemCount());
     }
 
     private String getCommands()
@@ -260,5 +316,12 @@ public class TaskSchedulerActivity extends AppCompatActivity {
             }
         }
         return msg;
+    }
+
+    public void reloadTaskList(View view)
+    {
+        helperClass.decodeTaskList();
+        helperClass.reloadTasks(spinner);
+        clearTask();
     }
 }

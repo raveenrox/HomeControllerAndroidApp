@@ -22,17 +22,37 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:weightSum="10"
+            android:weightSum="20"
             android:clipToPadding="true"
             android:clipChildren="true">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Task List"/>
-            <Spinner
-                android:layout_width="fill_parent"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/taskListSpinner"/>
+                android:orientation="horizontal"
+                android:weightSum="20">
+                <Spinner
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/taskListSpinner"
+                    android:layout_weight="20"/>
+                <ImageButton
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_reload"
+                    android:background="@drawable/ripple_effect_trans"
+                    android:scaleType="fitStart"
+                    android:id="@+id/navDrawerSettings"
+                    android:padding="8dp"
+                    android:layout_margin="8dp"
+                    android:textAlignment="center"
+                    android:onClick="reloadTaskList"
+                    android:clickable="true" />
+            </LinearLayout>
+
 
             <TextView
                 android:layout_width="wrap_content"

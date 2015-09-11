@@ -391,7 +391,15 @@ public class HelperClass {
     }
 
     public void reloadTasks(Spinner spinner) {
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, helperDataClass.taskNames);
+        ArrayAdapter<String> arrayAdapter;
+        if(helperDataClass.taskTimes.size()!= 0) {
+            arrayAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, helperDataClass.taskNames);
+        } else {
+            ArrayList<String> arr = new ArrayList<String>();
+            arr.add("Task List is Empty");
+            arrayAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, arr);
+        }
+        Log.d("RAV-SIZE", ""+helperDataClass.taskNames.size());
         spinner.setAdapter(arrayAdapter);
     }
 
@@ -422,7 +430,6 @@ public class HelperClass {
                 responseOutput.append(line);
             }
             br.close();
-
 
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             factory.setNamespaceAware(true);
@@ -480,12 +487,26 @@ public class HelperClass {
                 }
                 eventType = parser.next();
             }
-            Log.d("RAV-SIZE", taskList.size()+"");
+            helperDataClass.taskNames.clear();
+            helperDataClass.taskTimes.clear();
+            helperDataClass.taskDates.clear();
+            helperDataClass.taskStates.clear();
+            helperDataClass.taskCommands.clear();
             for(int i=0; i<taskList.size();i++)
             {
                 helperDataClass.taskNames.add(taskList.get(i).taskName);
                 helperDataClass.taskDates.add(taskList.get(i).taskDate);
                 helperDataClass.taskTimes.add(taskList.get(i).taskTime);
+
+                ArrayList<String> command = new ArrayList<String>();
+                ArrayList<String> state = new ArrayList<String>();
+                for(int j=0; j<taskList.get(i).taskCommands.size();j++)
+                {
+                    command.add(taskList.get(i).taskCommands.get(j).commandNo);
+                    state.add(taskList.get(i).taskCommands.get(j).commandState);
+                }
+                helperDataClass.taskCommands.add(command);
+                helperDataClass.taskStates.add(state);
             }
             return true;
 
