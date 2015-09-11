@@ -61,13 +61,7 @@ public class TaskSchedulerActivity extends AppCompatActivity {
         helperDataClass = (HelperDataClass) getIntent().getSerializableExtra("helper");
         helperClass = new HelperClass(this, helperDataClass);
 
-        Calendar cal = Calendar.getInstance();
-        year_x = cal.get(Calendar.YEAR);
-        month_x = cal.get(Calendar.MONTH);
-        day_x = cal.get(Calendar.DAY_OF_MONTH);
-
-        hour_x = cal.get(Calendar.HOUR_OF_DAY);
-        minute_x = cal.get(Calendar.MINUTE);
+        loadDateTime();
 
         spinner = (Spinner) findViewById(R.id.taskListSpinner);
         textDate = (TextView) findViewById(R.id.textDate);
@@ -112,11 +106,16 @@ public class TaskSchedulerActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 TextView taskName = (TextView) findViewById(R.id.txtTaskName);
-                if(position!=0) {
+                //if(position!=0 && !parent.getItemAtPosition(0).toString().equals("Task List is Empty")) {
                     clearTask();
                     taskName.setText(helperDataClass.taskNames.get(position));
                     textDate.setText(helperDataClass.taskDates.get(position));
+                    year_x = Integer.parseInt(helperDataClass.taskDates.get(position).substring(0,4));
+                    month_x = Integer.parseInt(helperDataClass.taskDates.get(position).substring(5,7))+1;
+                    day_x = Integer.parseInt(helperDataClass.taskDates.get(position).substring(8,10));
                     textTime.setText(helperDataClass.taskTimes.get(position));
+                    hour_x = Integer.parseInt(helperDataClass.taskTimes.get(position).substring(0,2));
+                    minute_x = Integer.parseInt(helperDataClass.taskTimes.get(position).substring(3,5));
                     for(int i=0; i<helperDataClass.taskStates.get(position).size(); i++) {
                         int pos=0;
                         loop: for(int j=0; j<commandNos.size(); j++) {
@@ -131,7 +130,7 @@ public class TaskSchedulerActivity extends AppCompatActivity {
                             checkedOffStatus.set(pos, true);
                         }
                     }
-                }
+                //}
             }
 
             @Override
@@ -297,9 +296,22 @@ public class TaskSchedulerActivity extends AppCompatActivity {
         }
         taskName.setText("Task");
         Calendar calendar = Calendar.getInstance();
-        textDate.setText(formatDate(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.DAY_OF_MONTH)));
-        textTime.setText(formatTime(calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE)));
+        loadDateTime();
+        textDate.setText(formatDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)));
+        textTime.setText(formatTime(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE)));
         tableAdapter.notifyItemRangeChanged(0, tableAdapter.getItemCount());
+
+    }
+
+    private void loadDateTime()
+    {
+        Calendar cal = Calendar.getInstance();
+        year_x = cal.get(Calendar.YEAR);
+        month_x = cal.get(Calendar.MONTH);
+        day_x = cal.get(Calendar.DAY_OF_MONTH);
+
+        hour_x = cal.get(Calendar.HOUR_OF_DAY);
+        minute_x = cal.get(Calendar.MINUTE);
     }
 
     private String getCommands()
