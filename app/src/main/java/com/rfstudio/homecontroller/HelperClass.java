@@ -1,5 +1,6 @@
 package com.rfstudio.homecontroller;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -173,33 +174,14 @@ public class HelperClass {
                             helperDataClass.statusLine = responseOutput.toString();
                         }
                     }
-
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 } catch (IOException e){
                     e.printStackTrace();
                 }
-
             }
         }.start();
-    }
 
-    void checkStatus()
-    {
-        /*String line = helperDataClass.statusLine;
-        if(line!=null && !line.isEmpty() && !line.equals("")) {
-            Log.d("RAV-Output-Status", line);
-            if (line.charAt(0) == 'R' && line.charAt(line.length() - 1) == 'N') {
-                helperDataClass.status = new ArrayList<Boolean>();
-                for (int i = 0; i < line.length() - 2; i++) {
-                    if (line.charAt(i + 1) == '0') {
-                        helperDataClass.status.add(i, false);
-                    } else if (line.charAt(i + 1) == '1') {
-                        helperDataClass.status.add(i, true);
-                    }
-                }
-            }
-        }*/
     }
 
     void getStatus()
@@ -254,10 +236,8 @@ public class HelperClass {
             e.printStackTrace();
         }
 
-        Log.d("RAV-S", helperDataClass.state.size()+"");
         for(Iterator<Boolean> i = helperDataClass.state.iterator(); i.hasNext(); ) {
             boolean state = i.next();
-            Log.d("RAV-S", state+"");
         }
     }
 
@@ -353,9 +333,11 @@ public class HelperClass {
         }
     }
 
-    public boolean addTask(String name, String date, String time, String commands)
-    {
-        String message = "setTask:<newtask><name>"+name+"</name><date>"+date+"</date><time>"+time+"</time><msg>"+commands+"</msg></newtask>";
+    public boolean addTask(String name, String date, String time, String commands) {
+        if(name.isEmpty() || date.isEmpty() || time.isEmpty() || commands.isEmpty()) {
+            return false;
+        }
+        String message = "setTask:<newtask><name>" + name + "</name><date>" + date + "</date><time>" + time + "</time><msg>" + commands + "</msg></newtask>";
         Log.d("RAV-MSG", message);
         try {
             URL url = new URL("http://" + preferences.getString("url", "192.168.1.100") + "/hc/androidq.php");
@@ -373,15 +355,14 @@ public class HelperClass {
             BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String line = "";
             StringBuilder responseOutput = new StringBuilder();
-            while((line = br.readLine()) != null ) {
+            while ((line = br.readLine()) != null) {
                 responseOutput.append(line);
             }
             br.close();
 
             if (responseOutput.toString().equals("TASK_ADDED")) {
                 return true;
-            } else
-            {
+            } else {
                 return false;
             }
         } catch (Exception ex) {
@@ -399,7 +380,6 @@ public class HelperClass {
             arr.add("Task List is Empty");
             arrayAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, arr);
         }
-        Log.d("RAV-SIZE", ""+helperDataClass.taskNames.size());
         spinner.setAdapter(arrayAdapter);
     }
 
@@ -514,5 +494,58 @@ public class HelperClass {
             ex.printStackTrace();
             return false;
         }
+    }
+
+    public void removeTask(String taskName, final TaskSchedulerActivity taskSchedulerActivity)
+    {
+        final String message = "removeTask:"+taskName;
+        new Thread() {
+            public void run()
+            {
+                try {
+                    URL url = new URL("http://"+preferences.getString("url", "192.168.1.100")+"/hc/androidq.php");
+                    String urlParameters = "username="+preferences.getString("username", "")+"&password="+preferences.getString("password", "")+"&message="+message;
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("POST");
+                    connection.setRequestProperty("USER-AGENT", "Mozilla/5.0");
+                    connection.setRequestProperty("ACCEPT-LANGUAGE", "en-US,en;0.5");
+                    connection.setDoOutput(true);
+                    DataOutputStream dStream = new DataOutputStream(connection.getOutputStream());
+                    dStream.writeBytes(urlParameters);
+                    dStream.flush();
+                    dStream.close();
+
+                    BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    String line = "";
+                    StringBuilder responseOutput = new StringBuilder();
+                    while((line = br.readLine()) != null ) {
+                        responseOutput.append(line);
+                    }
+                    br.close();
+                    Activity myActivity = (Activity) context;
+                    if(responseOutput.toString().equals("TASK_DELETED")) {
+                        myActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(context, "Task Removed", Toast.LENGTH_LONG).show();
+                                taskSchedulerActivity.reloadTaskList(null);
+                            }
+                        });
+                    } else {
+                        myActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(context, "Failed to Remove Task", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e){
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+
     }
 }

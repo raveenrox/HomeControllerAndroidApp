@@ -281,7 +281,7 @@ public class TaskSchedulerActivity extends AppCompatActivity {
                 clearTask();
                 break;
             case R.id.removeTask:
-
+                helperClass.removeTask(taskName.getText().toString(), this);
                 break;
         }
     }
