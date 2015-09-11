@@ -1,0 +1,54 @@
+ //Old Methods
+
+ //readFile() depreciated section
+ /* Log.d("RAV-E", cursor_e+"");
+            Log.d("RAV-S", cursor_s+"");
+            Log.d("RAV-LEN", list_length);*/
+
+            //To Here
+/*
+            for(int i=0; i<stringBuilder.length(); i++)
+            {
+                if(stringBuilder.charAt(i)=='\n')
+                {
+                    ver = stringBuilder.substring(0, i);
+                    for(int j=i+1; j<stringBuilder.length(); j++) {
+                        if(stringBuilder.charAt(j)=='\n')
+                        {
+                            list_length = stringBuilder.substring(i+1, j);
+                            getImage(Integer.parseInt(list_length));
+                            for(int z=0;z<Integer.parseInt(list_length);z++)
+                            {
+                                for(int k=j+1;k<stringBuilder.length();k++)
+                                {
+                                    if(stringBuilder.charAt(k)=='\n')
+                                    {
+                                        images.add(drawableFromUrl(z));
+                                        titles.add(z, stringBuilder.substring(j + 1, k));
+                                        //Log.d("RAV", stringBuilder.substring(j+1, k));
+                                        names.add(z, stringBuilder.substring(j+1, k));
+                                        j=k;
+                                        break;
+                                    }
+                                }
+                            }
+                            for(int l=j+1;l<stringBuilder.length(); l++)
+                            {
+                                if(stringBuilder.charAt(l)=='\n')
+                                {
+                                    String line = stringBuilder.substring(j+1, l);
+                                    String loc = line.substring(0,line.indexOf(":"));
+                                    String name = line.substring(line.indexOf(":")+1, line.lastIndexOf(":"));
+                                    String pinNo = line.substring(line.lastIndexOf(":")+1,line.length());
+                                    //Log.d("RAV", stringBuilder.substring(j+1, l));
+
+
+                                    j=l;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }*/

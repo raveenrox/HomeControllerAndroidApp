@@ -1,0 +1,83 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.rfstudio.homecontroller.NavigationDrawer"
+    android:background="@android:color/holo_red_light"
+>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/NavTopImage"
+            android:src="@drawable/main_image"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:scaleType="fitXY"
+            android:adjustViewBounds="true"
+            android:clickable="true"/>
+        <ImageButton
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignBottom="@+id/NavTopImage"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_settings"
+            android:background="@drawable/ripple_effect_trans"
+            android:scaleType="fitStart"
+            android:id="@+id/navDrawerSettings"
+            android:layout_marginBottom="8dp"
+            android:layout_marginRight="16dp"
+            android:textAlignment="center"
+            android:onClick="navAct"
+            android:clickable="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:id="@+id/lblWelcome"
+            android:layout_alignParentTop="@id/NavTopImage"
+            android:textColor="@android:color/white"
+            android:textSize="32sp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_above="@+id/lblHomeController"
+            android:fontFamily="sans-serif-thin"
+            style="@style/ShadowText"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Home Controller"
+            android:id="@+id/lblHomeController"
+            android:layout_alignParentTop="@id/NavTopImage"
+            android:textColor="@android:color/white"
+            android:textSize="32sp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_alignBottom="@id/NavTopImage"
+            android:fontFamily="sans-serif-thin"
+            style="@style/ShadowText"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/navRecyclerView"
+            android:layout_below="@+id/NavTopImage"
+            android:scrollbars="vertical">
+
+
+
+        </android.support.v7.widget.RecyclerView>
+
+    </RelativeLayout>
+
+
+
+</FrameLayout>

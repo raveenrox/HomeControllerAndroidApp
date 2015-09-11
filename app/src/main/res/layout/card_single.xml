@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:clipToPadding="false">
+    <!-- android:paddingTop="16dp" -->
+
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        card_view:cardCornerRadius="4dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:onClick="showCardAni"
+        card_view:cardElevation="5dp"
+        card_view:cardMaxElevation="10dp"
+        android:layout_margin="8dp">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:layout_width="162dp"
+                android:layout_height="162dp"
+                android:layout_gravity="left"
+                android:id="@+id/card_image"
+                android:scaleType="fitXY"
+                android:src="@drawable/img_not_found"/>
+            <TextView
+                android:id="@+id/card_text"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="TEXT_ERROR"
+                android:gravity="center"
+                android:background="@color/rav_red"
+                android:fontFamily="sans-serif-thin"
+                android:textSize="24sp"/>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

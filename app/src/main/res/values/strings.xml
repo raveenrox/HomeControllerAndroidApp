@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Home Controller</string>
+    <string name="title_activity_main">Main</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <string name="title_activity_splash_screen">Home Controller</string>
+    <string name="dummy_button">Home Controller</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_initialize">Initialize</string>
+    <string name="title_activity_card_details">Details</string>
+    <string name="title_activity_task_scheduler">Task Scheduler</string>
+</resources>

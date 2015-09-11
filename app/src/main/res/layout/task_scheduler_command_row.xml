@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipToPadding="false"
+    android:orientation="horizontal"
+    android:background="@drawable/ripple_effect_card_details">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/rowTitle"
+        android:text="none"
+        android:textSize="24sp"
+        android:clickable="true"
+
+        android:padding="16dp"
+        android:onClick="cardAct"
+        android:textColor="@android:color/black" />
+
+    <RadioGroup android:orientation="horizontal"
+        android:layout_gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true">
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/onCmd"
+            android:buttonTint="@android:color/holo_red_light"/>
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/offCmd"
+            android:buttonTint="@android:color/holo_red_light"/>
+    </RadioGroup>
+
+
+</RelativeLayout>
