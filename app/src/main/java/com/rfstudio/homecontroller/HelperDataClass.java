@@ -31,6 +31,9 @@ public class HelperDataClass implements Serializable {
 
     ArrayList<Boolean> state= new ArrayList<Boolean>();
 
+    ArrayList<String> taskNames = new ArrayList<String>();
+    ArrayList<String> taskTimes = new ArrayList<String>();
+    ArrayList<String> taskDates = new ArrayList<String>();
 
 
 }

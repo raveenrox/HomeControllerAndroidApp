@@ -10,12 +10,15 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -30,6 +33,7 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -380,6 +384,110 @@ public class HelperClass {
             {
                 return false;
             }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    public void reloadTasks(Spinner spinner) {
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, helperDataClass.taskNames);
+        spinner.setAdapter(arrayAdapter);
+    }
+
+    public ArrayList<String> getTaskList()
+    {
+        return helperDataClass.taskNames;
+    }
+
+    public boolean decodeTaskList()
+    {
+        try {
+            URL url = new URL("http://" + preferences.getString("url", "192.168.1.100") + "/hc/androidq.php");
+            String urlParameters = "username=" + preferences.getString("username", "") + "&password=" + preferences.getString("password", "") + "&message=getTaskList";
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("USER-AGENT", "Mozilla/5.0");
+            connection.setRequestProperty("ACCEPT-LANGUAGE", "en-US,en;0.5");
+            connection.setDoOutput(true);
+            DataOutputStream dStream = new DataOutputStream(connection.getOutputStream());
+            dStream.writeBytes(urlParameters);
+            dStream.flush();
+            dStream.close();
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String line = "";
+            StringBuilder responseOutput = new StringBuilder();
+            while((line = br.readLine()) != null ) {
+                responseOutput.append(line);
+            }
+            br.close();
+
+
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+            factory.setNamespaceAware(true);
+            XmlPullParser parser = factory.newPullParser();
+            parser.setInput(new ByteArrayInputStream(responseOutput.toString().getBytes(StandardCharsets.UTF_8)),null);
+
+            List<Task> taskList = new ArrayList<Task>();
+            List<TaskCommand> commandList = new ArrayList<TaskCommand>();
+            Task task = null;
+            TaskCommand taskCommand = null;
+            String text = "";
+
+            int eventType = parser.getEventType();
+            while(eventType != XmlPullParser.END_DOCUMENT)
+            {
+                String tagName = parser.getName();
+                switch (eventType)
+                {
+                    case XmlPullParser.START_TAG:
+                        if(tagName.equalsIgnoreCase("task"))
+                        {
+                            task = new Task();
+                            commandList = new ArrayList<TaskCommand>();
+                        } else if(tagName.equalsIgnoreCase("command"))
+                        {
+                            taskCommand = new TaskCommand();
+                        }
+                        break;
+                    case XmlPullParser.TEXT:
+                        text = parser.getText();
+                        break;
+                    case XmlPullParser.END_TAG:
+                        if(tagName.equalsIgnoreCase("task")) {
+                            task.taskCommands = commandList;
+                            taskList.add(task);
+                        } else if (tagName.equalsIgnoreCase("name"))
+                        {
+                            task.taskName = text;
+                        } else if (tagName.equalsIgnoreCase("date")) {
+                            task.taskDate = text;
+                        } else if(tagName.equalsIgnoreCase("time"))
+                        {
+                            task.taskTime = text;
+                        } else if(tagName.equalsIgnoreCase("no"))
+                        {
+                            taskCommand.commandNo = text;
+                        } else if(tagName.equalsIgnoreCase("state"))
+                        {
+                            taskCommand.commandState = text;
+                        } else if(tagName.equalsIgnoreCase("command"))
+                        {
+                            commandList.add(taskCommand);
+                        }
+                        break;
+                }
+                eventType = parser.next();
+            }
+            Log.d("RAV-SIZE", taskList.size()+"");
+            for(int i=0; i<taskList.size();i++)
+            {
+                helperDataClass.taskNames.add(taskList.get(i).taskName);
+                helperDataClass.taskDates.add(taskList.get(i).taskDate);
+                helperDataClass.taskTimes.add(taskList.get(i).taskTime);
+            }
+            return true;
 
         } catch (Exception ex) {
             ex.printStackTrace();

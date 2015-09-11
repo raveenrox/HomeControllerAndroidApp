@@ -17,7 +17,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
+import android.widget.Spinner;
 import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -41,6 +43,7 @@ public class TaskSchedulerActivity extends AppCompatActivity {
     private ArrayList<String> commands;
     private ArrayList<String> commandNos;
     private HelperDataClass helperDataClass;
+    private HelperClass helperClass;
 
     private TableAdapter tableAdapter;
 
@@ -50,6 +53,7 @@ public class TaskSchedulerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_task_scheduler);
 
         helperDataClass = (HelperDataClass) getIntent().getSerializableExtra("helper");
+        helperClass = new HelperClass(this, helperDataClass);
 
         Calendar cal = Calendar.getInstance();
         year_x = cal.get(Calendar.YEAR);
@@ -93,6 +97,9 @@ public class TaskSchedulerActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         tableAdapter = new TableAdapter(this, commands, commandNos, this);
         recyclerView.setAdapter(tableAdapter);
+
+        helperClass.decodeTaskList();
+        helperClass.reloadTasks((Spinner) findViewById(R.id.taskListSpinner));
     }
 
     @Override
@@ -204,18 +211,20 @@ public class TaskSchedulerActivity extends AppCompatActivity {
 
     public void taskCommands(View view)
     {
-        HelperClass helperClass = new HelperClass(this, null);
-        TextView taskName = (TextView) findViewById(R.id.txtTaskName);
+        final TextView taskName = (TextView) findViewById(R.id.txtTaskName);
         switch (view.getId())
         {
             case R.id.saveTask:
-                if(helperClass.addTask(taskName.getText().toString(), textDate.getText().toString(), textTime.getText().toString(), getCommands()))
-                {
-                    Toast.makeText(this, "Task Added Successfully", Toast.LENGTH_LONG).show();
-                } else
-                {
-                    Toast.makeText(this, "Failed to Add Task", Toast.LENGTH_LONG).show();
-                }
+                new Thread() {
+                    public void run() {
+                        if (helperClass.addTask(taskName.getText().toString(), textDate.getText().toString(), textTime.getText().toString(), getCommands())) {
+                            Toast.makeText(TaskSchedulerActivity.this, "Task Added Successfully", Toast.LENGTH_LONG).show();
+                        } else {
+
+                            Toast.makeText(TaskSchedulerActivity.this, "Failed to Add Task", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }.start();
 
                 break;
             case R.id.clearTask:
