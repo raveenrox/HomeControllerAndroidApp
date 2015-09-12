@@ -4,6 +4,15 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
+
+    <permission android:name="com.rfstudio.homecontroller.permission.C2DM_MESSAGE"
+        android:protectionLevel="signature"></permission>
+
+    <uses-permission android:name="com.rfstudio.homecontroller.permission.C2DM_MESSAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -46,16 +55,19 @@
             android:label="@string/title_activity_task_scheduler"
             android:theme="@style/AppThemeActionBar">
         </activity>
+
         <receiver
-            android:name="com.rfstudio.homecontroller.notifications.PUSHNOTIFICATION"
-            android:exported="true"
+            android:name="com.rfstudio.homecontroller.GCMReceiver"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
-                <category android:name="%package%"/>
+                <category android:name="com.rfstudio.homecontroller"/>
             </intent-filter>
         </receiver>
-        <service android:name="com.rfstudio.homecontroller.notifications.GCMIntentServicce" />
+        <service android:name="com.rfstudio.homecontroller.GCMMessageHandler" />
+        <meta-data android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version"/>
+
     </application>
 
 </manifest>
