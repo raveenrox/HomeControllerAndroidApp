@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofenceStatusCodes;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
@@ -80,7 +81,7 @@ public class SettingsActivity extends AppCompatActivity
         geoFencesAdded = preferences.getBoolean("geoFenceState", false);
         geoFenceState.setChecked(geoFencesAdded);
 
-        populateGeofenceList();
+        populateGeoFenceList();
         buildGoogleApiClient();
     }
 
@@ -120,7 +121,7 @@ public class SettingsActivity extends AppCompatActivity
         Log.i(TAG, "Connection suspended");
     }
 
-    private GeofencingRequest getGeofencingRequest() {
+    private GeofencingRequest getGeoFencingRequest() {
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
 
         builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
@@ -138,13 +139,26 @@ public class SettingsActivity extends AppCompatActivity
 
         try {
             if(preferences.getBoolean("geoFenceState", false)) {
-                LocationServices.GeofencingApi.addGeofences(googleApiClient, getGeofencingRequest(), getGeoFencePendingIntent()).setResultCallback(this);
+                LocationServices.GeofencingApi.addGeofences(googleApiClient, getGeoFencingRequest(), getGeoFencePendingIntent()).setResultCallback(this);
 
             } else {
                 LocationServices.GeofencingApi.removeGeofences(googleApiClient, getGeoFencePendingIntent()).setResultCallback(this);
             }
         } catch (SecurityException securityException) {
             logSecurityException(securityException);
+        }
+    }
+
+    public static String getErrorString(int errorCode) {
+        switch (errorCode) {
+            case GeofenceStatusCodes.GEOFENCE_NOT_AVAILABLE:
+                return "Geo Fencing Not Available";
+            case GeofenceStatusCodes.GEOFENCE_TOO_MANY_GEOFENCES:
+                return "Too Many Geo Fences";
+            case GeofenceStatusCodes.GEOFENCE_TOO_MANY_PENDING_INTENTS:
+                return "Too Many Pending Intents";
+            default:
+                return "Unkown Error";
         }
     }
 
@@ -168,7 +182,7 @@ public class SettingsActivity extends AppCompatActivity
                     Toast.LENGTH_SHORT
             ).show();
         } else {
-            String errorMessage = "Error"+status.getStatusCode();
+            String errorMessage = "Error - "+getErrorString(status.getStatusCode());
             Log.e(TAG, errorMessage);
         }
     }
@@ -181,7 +195,7 @@ public class SettingsActivity extends AppCompatActivity
         return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    public void populateGeofenceList() {
+    public void populateGeoFenceList() {
         HashMap<String, LatLng> LOCATIONS = new HashMap<String, LatLng>();
         LOCATIONS.put("HOME", new LatLng(7.2804603,79.8668137));
         for (Map.Entry<String, LatLng> entry : LOCATIONS.entrySet()) {
@@ -192,6 +206,7 @@ public class SettingsActivity extends AppCompatActivity
                             entry.getValue().longitude,
                             preferences.getInt("radius", 500)
                     )
+                    .setExpirationDuration(43200000)
                     .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
                             Geofence.GEOFENCE_TRANSITION_EXIT)
                     .build());
