@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -34,11 +35,15 @@ public class SettingsActivity extends AppCompatActivity {
 
     private SharedPreferences preferences;
 
+    private HelperClass helperClass;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        helperClass = new HelperClass(this, null);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -112,6 +117,10 @@ test
         txtUrl.setText(preferences.getString("url",""));
     }
 
+    public void registerGCM(View view) {
+        getRegID();
+    }
+
     public void getRegID() {
         new AsyncTask<Void, Void, String>() {
             @Override
@@ -123,14 +132,22 @@ test
                     }
                     regId = gcm.register(PROJECT_NUMBER);
                     msg = "Device Registered, registration ID = "+regId;
+                    Log.i("RAV-GCM", regId);
+
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("regId", regId);
+                    editor.apply();
+
+                    helperClass.saveDevId(regId);
+
                 } catch (Exception ex) { msg = "Error: "+ ex.getMessage(); }
                 return msg;
             }
 
             @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG);
+            protected void onPostExecute(String msg) {
+                super.onPostExecute(msg);
+                //Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
             }
         }.execute(null, null, null);
     }

@@ -578,4 +578,73 @@ public class HelperClass {
             }
         }.start();
     }
+
+    public void saveDevId(String devId)
+    {
+        final String dev =devId;
+        new Thread() {
+            public void run()
+            {
+                try {
+                    URL url = new URL("http://"+preferences.getString("url", "192.168.1.100")+"/hc/registerdevice.php");
+                    String urlParameters = "devid="+dev;
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("POST");
+                    connection.setRequestProperty("USER-AGENT", "Mozilla/5.0");
+                    connection.setRequestProperty("ACCEPT-LANGUAGE", "en-US,en;0.5");
+                    connection.setDoOutput(true);
+                    connection.setConnectTimeout(2000);
+                    connection.setReadTimeout(2000);
+                    DataOutputStream dStream = new DataOutputStream(connection.getOutputStream());
+                    dStream.writeBytes(urlParameters);
+                    dStream.flush();
+                    dStream.close();
+
+                    BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    String line = "";
+                    StringBuilder responseOutput = new StringBuilder();
+                    while((line = br.readLine()) != null ) {
+                        responseOutput.append(line);
+                    }
+                    br.close();
+
+                    Activity myActivity = (Activity) context;
+                    if(responseOutput.toString().equals("REGISTERED")) {
+                        myActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(context, "Device Registered", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    } else if(responseOutput.toString().equals("EXIST")) {
+                        myActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(context, "Device Already Registered", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    } else {
+                        myActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(context, "Device Registration Failed", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (SocketTimeoutException ex) {
+                    Activity myActivity = (Activity) context;
+                    myActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, "Connection Timed Out", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                } catch (IOException e){
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
 }
