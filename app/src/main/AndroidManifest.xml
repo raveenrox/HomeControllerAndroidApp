@@ -46,6 +46,16 @@
             android:label="@string/title_activity_task_scheduler"
             android:theme="@style/AppThemeActionBar">
         </activity>
+        <receiver
+            android:name="com.rfstudio.homecontroller.notifications.PUSHNOTIFICATION"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+                <category android:name="%package%"/>
+            </intent-filter>
+        </receiver>
+        <service android:name="com.rfstudio.homecontroller.notifications.GCMIntentServicce" />
     </application>
 
 </manifest>

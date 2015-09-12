@@ -79,8 +79,17 @@
                 android:inputType="textUri"
                 android:singleLine="true"
                 android:imeOptions="actionGo"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Register for Push Noification"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnRegisterGCM"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:text="Register"/>
         </LinearLayout>
-
     </ScrollView>
     <LinearLayout
         android:layout_width="match_parent"

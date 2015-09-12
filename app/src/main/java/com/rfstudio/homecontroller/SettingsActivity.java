@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -16,11 +17,18 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+
 public class SettingsActivity extends AppCompatActivity {
-    EditText txtUsername;
-    EditText txtPassword;
-    EditText txtUrl;
-    EditText txtName;
+
+    GoogleCloudMessaging gcm;
+    String regId;
+    String PROJECT_NUMBER = "948034608446";
+
+    private EditText txtUsername;
+    private EditText txtPassword;
+    private EditText txtUrl;
+    private EditText txtName;
 
     private static final String PREF_NAME = "settings";
 
@@ -102,5 +110,28 @@ test
         txtUsername.setText(preferences.getString("username",""));
         txtPassword.setText(preferences.getString("password",""));
         txtUrl.setText(preferences.getString("url",""));
+    }
+
+    public void getRegID() {
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... params) {
+                String msg = "";
+                try {
+                    if(gcm==null) {
+                        gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
+                    }
+                    regId = gcm.register(PROJECT_NUMBER);
+                    msg = "Device Registered, registration ID = "+regId;
+                } catch (Exception ex) { msg = "Error: "+ ex.getMessage(); }
+                return msg;
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG);
+            }
+        }.execute(null, null, null);
     }
 }
