@@ -101,6 +101,17 @@
                 android:layout_marginBottom="@dimen/activity_vertical_margin"
                 android:text="Select Geo Fence"
                 android:onClick="settingsAct"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="Monitor Geo Fence"
+                android:layout_height="wrap_content" />
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:id="@+id/geoFenceState"
+                android:onClick="geoFenceButtonHandler"/>
+
         </LinearLayout>
     </ScrollView>
     <LinearLayout

@@ -35,6 +35,7 @@ public class GeoFencingActivity extends Activity implements OnMapReadyCallback {
     private Circle circle;
     private CircleOptions circleOptions;
     private Location location;
+    private Location backupLocation;
 
     private int radius=0;
     private LatLng position;
@@ -50,10 +51,18 @@ public class GeoFencingActivity extends Activity implements OnMapReadyCallback {
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         location = locationManager.getLastKnownLocation(locationManager.getBestProvider(new Criteria(), false));
 
-        preferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-        position = new LatLng(Double.parseDouble(preferences.getString("latitude",Double.toString(location.getLatitude()))),
-                Double.parseDouble(preferences.getString("longitude",Double.toString(location.getLongitude()))));
+        backupLocation = new Location(locationManager.getBestProvider(new Criteria(), false));
+        backupLocation.setLatitude(0.0);
+        backupLocation.setLongitude(0.0);
 
+        preferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        if(location==null) {
+            position = new LatLng(Double.parseDouble(preferences.getString("latitude", Double.toString(backupLocation.getLatitude()))),
+                    Double.parseDouble(preferences.getString("longitude", Double.toString(backupLocation.getLongitude()))));
+        } else {
+            position = new LatLng(Double.parseDouble(preferences.getString("latitude", Double.toString(location.getLatitude()))),
+                    Double.parseDouble(preferences.getString("longitude", Double.toString(location.getLongitude()))));
+        }
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
         MapFragment mapFragment = (MapFragment) getFragmentManager()
@@ -65,7 +74,7 @@ public class GeoFencingActivity extends Activity implements OnMapReadyCallback {
             @Override
             public void onMapLongClick(LatLng latLng) {
                 circle.setCenter(latLng);
-                position=latLng;
+                position = latLng;
             }
         });
 
@@ -74,8 +83,8 @@ public class GeoFencingActivity extends Activity implements OnMapReadyCallback {
         radiusBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                circle.setRadius((progress+5)*100);
-                radius=(progress+5)*100;
+                circle.setRadius((progress + 5) * 100);
+                radius = (progress + 5) * 100;
             }
 
             @Override

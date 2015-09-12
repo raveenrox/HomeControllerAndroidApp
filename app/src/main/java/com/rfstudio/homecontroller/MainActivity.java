@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -22,7 +21,6 @@ public class MainActivity extends Activity {
     private RecyclerView recyclerView;
 
     private ArrayList<Drawable> images;
-
     public SharedPreferences preferences;
     private SharedPreferences.Editor editor;
 

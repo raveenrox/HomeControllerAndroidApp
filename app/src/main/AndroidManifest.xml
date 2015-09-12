@@ -9,7 +9,7 @@
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <permission
         android:name="com.rfstudio.homecontroller.permission.C2DM_MESSAGE"
         android:protectionLevel="signature" />
