@@ -4,14 +4,21 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <permission android:name="com.rfstudio.homecontroller.permission.C2DM_MESSAGE"
-        android:protectionLevel="signature"></permission>
+    <permission
+        android:name="com.rfstudio.homecontroller.permission.C2DM_MESSAGE"
+        android:protectionLevel="signature" />
 
     <uses-permission android:name="com.rfstudio.homecontroller.permission.C2DM_MESSAGE" />
+
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -55,19 +62,31 @@
             android:label="@string/title_activity_task_scheduler"
             android:theme="@style/AppThemeActionBar">
         </activity>
-
+        <activity
+            android:name=".GeoFencingActivity"
+            android:label="@string/title_activity_geo_fencing" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.rfstudio.homecontroller.SettingsActivity" />
+        </activity>
         <receiver
-            android:name="com.rfstudio.homecontroller.GCMReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND">
+            android:name=".GCMReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
-                <category android:name="com.rfstudio.homecontroller"/>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                <category android:name="com.rfstudio.homecontroller" />
             </intent-filter>
         </receiver>
-        <service android:name="com.rfstudio.homecontroller.GCMMessageHandler" />
-        <meta-data android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version"/>
 
+        <service android:name=".GCMMessageHandler" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCzNyaZYyJwlLx8ZbJAARGXpAeESf1fP0Q" />
     </application>
 
 </manifest>

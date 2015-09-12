@@ -12,4 +12,5 @@
     <color name="rav_very_light_red">#FFEBEE</color>
     <color name="rav_white">#FFFFFF</color>
     <color name="rav_black">#000000</color>
+    <color name="rav_map_fill">#50FFFFFF</color>
 </resources>

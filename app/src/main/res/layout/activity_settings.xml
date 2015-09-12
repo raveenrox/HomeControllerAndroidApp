@@ -90,13 +90,26 @@
                 android:layout_marginBottom="@dimen/activity_vertical_margin"
                 android:text="Register"
                 android:onClick="registerGCM"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="Geo Fencing"
+                android:layout_height="wrap_content" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnGeoFence"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:text="Select Geo Fence"
+                android:onClick="settingsAct"/>
         </LinearLayout>
     </ScrollView>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="8dp">
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -14,4 +14,5 @@
     <string name="title_activity_initialize">Initialize</string>
     <string name="title_activity_card_details">Details</string>
     <string name="title_activity_task_scheduler">Task Scheduler</string>
+    <string name="title_activity_geo_fencing">GeoFencingActivity</string>
 </resources>

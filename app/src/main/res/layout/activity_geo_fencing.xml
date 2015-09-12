@@ -1,0 +1,45 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.rfstudio.homecontroller.GeoFencingActivity">
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        android:name="com.google.android.gms.maps.MapFragment"
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
+        android:id="@+id/mapCancel"
+        android:onClick="geoFence"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@id/mapCancel"
+        android:layout_margin="16dp"
+        android:id="@+id/mapSave"
+        android:onClick="geoFence"/>
+
+    <SeekBar
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/mapCancel"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="32dp"
+        android:id="@+id/mapRadius"
+        android:max="25"
+        />
+
+</RelativeLayout>

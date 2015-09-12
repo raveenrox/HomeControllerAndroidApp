@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,8 +20,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends AppCompatActivity{
 
     GoogleCloudMessaging gcm;
     String regId;
@@ -75,6 +80,10 @@ public class SettingsActivity extends AppCompatActivity {
             case R.id.btnRestore:
                 txtUrl.setText("rfstudio.dlinkddns.com");
                 break;
+            case R.id.btnGeoFence:
+                Intent intent = new Intent(this, GeoFencingActivity.class);
+                startActivity(intent);
+                break;
 
             // FIXME: 9/11/2015 notification button
            /* case R.id.btnNotif:
@@ -114,7 +123,7 @@ test
         txtName.setText(preferences.getString("name", ""));
         txtUsername.setText(preferences.getString("username",""));
         txtPassword.setText(preferences.getString("password",""));
-        txtUrl.setText(preferences.getString("url",""));
+        txtUrl.setText(preferences.getString("url", ""));
     }
 
     public void registerGCM(View view) {
