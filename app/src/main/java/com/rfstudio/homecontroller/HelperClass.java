@@ -38,6 +38,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by Raveen on 8/12/2015.
@@ -156,6 +157,8 @@ public class HelperClass {
                     connection.setRequestProperty("USER-AGENT", "Mozilla/5.0");
                     connection.setRequestProperty("ACCEPT-LANGUAGE", "en-US,en;0.5");
                     connection.setDoOutput(true);
+                    connection.setReadTimeout(2000);
+                    connection.setConnectTimeout(2000);
                     DataOutputStream dStream = new DataOutputStream(connection.getOutputStream());
                     dStream.writeBytes(urlParameters);
                     dStream.flush();
@@ -174,6 +177,14 @@ public class HelperClass {
                             helperDataClass.statusLine = responseOutput.toString();
                         }
                     }
+                } catch (SocketTimeoutException ex) {
+                    Activity myActivity = (Activity) context;
+                    myActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, "Connection Timed Out", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 } catch (IOException e){
@@ -347,6 +358,8 @@ public class HelperClass {
             connection.setRequestProperty("USER-AGENT", "Mozilla/5.0");
             connection.setRequestProperty("ACCEPT-LANGUAGE", "en-US,en;0.5");
             connection.setDoOutput(true);
+            connection.setReadTimeout(2000);
+            connection.setConnectTimeout(2000);
             DataOutputStream dStream = new DataOutputStream(connection.getOutputStream());
             dStream.writeBytes(urlParameters);
             dStream.flush();
@@ -365,6 +378,15 @@ public class HelperClass {
             } else {
                 return false;
             }
+        } catch (SocketTimeoutException ex) {
+            Activity myActivity = (Activity) context;
+            myActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, "Connection Timed Out", Toast.LENGTH_LONG).show();
+                }
+            });
+            return false;
         } catch (Exception ex) {
             ex.printStackTrace();
             return false;
@@ -398,6 +420,8 @@ public class HelperClass {
             connection.setRequestProperty("USER-AGENT", "Mozilla/5.0");
             connection.setRequestProperty("ACCEPT-LANGUAGE", "en-US,en;0.5");
             connection.setDoOutput(true);
+            connection.setConnectTimeout(2000);
+            connection.setReadTimeout(2000);
             DataOutputStream dStream = new DataOutputStream(connection.getOutputStream());
             dStream.writeBytes(urlParameters);
             dStream.flush();
@@ -406,7 +430,7 @@ public class HelperClass {
             BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String line = "";
             StringBuilder responseOutput = new StringBuilder();
-            while((line = br.readLine()) != null ) {
+            while ((line = br.readLine()) != null) {
                 responseOutput.append(line);
             }
             br.close();
@@ -414,7 +438,7 @@ public class HelperClass {
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             factory.setNamespaceAware(true);
             XmlPullParser parser = factory.newPullParser();
-            parser.setInput(new ByteArrayInputStream(responseOutput.toString().getBytes(StandardCharsets.UTF_8)),null);
+            parser.setInput(new ByteArrayInputStream(responseOutput.toString().getBytes(StandardCharsets.UTF_8)), null);
 
             List<Task> taskList = new ArrayList<Task>();
             List<TaskCommand> commandList = new ArrayList<TaskCommand>();
@@ -423,18 +447,14 @@ public class HelperClass {
             String text = "";
 
             int eventType = parser.getEventType();
-            while(eventType != XmlPullParser.END_DOCUMENT)
-            {
+            while (eventType != XmlPullParser.END_DOCUMENT) {
                 String tagName = parser.getName();
-                switch (eventType)
-                {
+                switch (eventType) {
                     case XmlPullParser.START_TAG:
-                        if(tagName.equalsIgnoreCase("task"))
-                        {
+                        if (tagName.equalsIgnoreCase("task")) {
                             task = new Task();
                             commandList = new ArrayList<TaskCommand>();
-                        } else if(tagName.equalsIgnoreCase("command"))
-                        {
+                        } else if (tagName.equalsIgnoreCase("command")) {
                             taskCommand = new TaskCommand();
                         }
                         break;
@@ -442,25 +462,20 @@ public class HelperClass {
                         text = parser.getText();
                         break;
                     case XmlPullParser.END_TAG:
-                        if(tagName.equalsIgnoreCase("task")) {
+                        if (tagName.equalsIgnoreCase("task")) {
                             task.taskCommands = commandList;
                             taskList.add(task);
-                        } else if (tagName.equalsIgnoreCase("name"))
-                        {
+                        } else if (tagName.equalsIgnoreCase("name")) {
                             task.taskName = text;
                         } else if (tagName.equalsIgnoreCase("date")) {
                             task.taskDate = text;
-                        } else if(tagName.equalsIgnoreCase("time"))
-                        {
+                        } else if (tagName.equalsIgnoreCase("time")) {
                             task.taskTime = text;
-                        } else if(tagName.equalsIgnoreCase("no"))
-                        {
+                        } else if (tagName.equalsIgnoreCase("no")) {
                             taskCommand.commandNo = text;
-                        } else if(tagName.equalsIgnoreCase("state"))
-                        {
+                        } else if (tagName.equalsIgnoreCase("state")) {
                             taskCommand.commandState = text;
-                        } else if(tagName.equalsIgnoreCase("command"))
-                        {
+                        } else if (tagName.equalsIgnoreCase("command")) {
                             commandList.add(taskCommand);
                         }
                         break;
@@ -472,16 +487,14 @@ public class HelperClass {
             helperDataClass.taskDates.clear();
             helperDataClass.taskStates.clear();
             helperDataClass.taskCommands.clear();
-            for(int i=0; i<taskList.size();i++)
-            {
+            for (int i = 0; i < taskList.size(); i++) {
                 helperDataClass.taskNames.add(taskList.get(i).taskName);
                 helperDataClass.taskDates.add(taskList.get(i).taskDate);
                 helperDataClass.taskTimes.add(taskList.get(i).taskTime);
 
                 ArrayList<String> command = new ArrayList<String>();
                 ArrayList<String> state = new ArrayList<String>();
-                for(int j=0; j<taskList.get(i).taskCommands.size();j++)
-                {
+                for (int j = 0; j < taskList.get(i).taskCommands.size(); j++) {
                     command.add(taskList.get(i).taskCommands.get(j).commandNo);
                     state.add(taskList.get(i).taskCommands.get(j).commandState);
                 }
@@ -489,7 +502,15 @@ public class HelperClass {
                 helperDataClass.taskStates.add(state);
             }
             return true;
-
+        } catch (SocketTimeoutException ex) {
+            Activity myActivity = (Activity) context;
+            myActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, "Connection Timed Out", Toast.LENGTH_LONG).show();
+                }
+            });
+            return false;
         } catch (Exception ex) {
             ex.printStackTrace();
             return false;
@@ -510,6 +531,8 @@ public class HelperClass {
                     connection.setRequestProperty("USER-AGENT", "Mozilla/5.0");
                     connection.setRequestProperty("ACCEPT-LANGUAGE", "en-US,en;0.5");
                     connection.setDoOutput(true);
+                    connection.setConnectTimeout(2000);
+                    connection.setReadTimeout(2000);
                     DataOutputStream dStream = new DataOutputStream(connection.getOutputStream());
                     dStream.writeBytes(urlParameters);
                     dStream.flush();
@@ -541,11 +564,18 @@ public class HelperClass {
                     }
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
+                } catch (SocketTimeoutException ex) {
+                    Activity myActivity = (Activity) context;
+                    myActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, "Connection Timed Out", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 } catch (IOException e){
                     e.printStackTrace();
                 }
             }
         }.start();
-
     }
 }

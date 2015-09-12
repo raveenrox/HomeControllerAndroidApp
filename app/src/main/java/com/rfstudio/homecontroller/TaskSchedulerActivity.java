@@ -105,32 +105,36 @@ public class TaskSchedulerActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                TextView taskName = (TextView) findViewById(R.id.txtTaskName);
-                //if(position!=0 && !parent.getItemAtPosition(0).toString().equals("Task List is Empty")) {
+
+                if(helperDataClass.serverOnline) {
+                    TextView taskName = (TextView) findViewById(R.id.txtTaskName);
+                    //if(position!=0 && !parent.getItemAtPosition(0).toString().equals("Task List is Empty")) {
                     clearTask();
                     taskName.setText(helperDataClass.taskNames.get(position));
                     textDate.setText(helperDataClass.taskDates.get(position));
-                    year_x = Integer.parseInt(helperDataClass.taskDates.get(position).substring(0,4));
-                    month_x = Integer.parseInt(helperDataClass.taskDates.get(position).substring(5,7))+1;
-                    day_x = Integer.parseInt(helperDataClass.taskDates.get(position).substring(8,10));
+                    year_x = Integer.parseInt(helperDataClass.taskDates.get(position).substring(0, 4));
+                    month_x = Integer.parseInt(helperDataClass.taskDates.get(position).substring(5, 7)) + 1;
+                    day_x = Integer.parseInt(helperDataClass.taskDates.get(position).substring(8, 10));
                     textTime.setText(helperDataClass.taskTimes.get(position));
-                    hour_x = Integer.parseInt(helperDataClass.taskTimes.get(position).substring(0,2));
-                    minute_x = Integer.parseInt(helperDataClass.taskTimes.get(position).substring(3,5));
-                    for(int i=0; i<helperDataClass.taskStates.get(position).size(); i++) {
-                        int pos=0;
-                        loop: for(int j=0; j<commandNos.size(); j++) {
-                            if(commandNos.get(j).equals(helperDataClass.taskCommands.get(position).get(i))) {
+                    hour_x = Integer.parseInt(helperDataClass.taskTimes.get(position).substring(0, 2));
+                    minute_x = Integer.parseInt(helperDataClass.taskTimes.get(position).substring(3, 5));
+                    for (int i = 0; i < helperDataClass.taskStates.get(position).size(); i++) {
+                        int pos = 0;
+                        loop:
+                        for (int j = 0; j < commandNos.size(); j++) {
+                            if (commandNos.get(j).equals(helperDataClass.taskCommands.get(position).get(i))) {
                                 pos = j;
                                 break loop;
                             }
                         }
-                        if(helperDataClass.taskStates.get(position).get(i).equals("true")) {
+                        if (helperDataClass.taskStates.get(position).get(i).equals("true")) {
                             checkedOnStatus.set(pos, true);
-                        } else if(helperDataClass.taskStates.get(position).get(i).equals("false")) {
+                        } else if (helperDataClass.taskStates.get(position).get(i).equals("false")) {
                             checkedOffStatus.set(pos, true);
                         }
                     }
-                //}
+                    //}
+                }
             }
 
             @Override
