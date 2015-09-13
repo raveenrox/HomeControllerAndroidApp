@@ -10,7 +10,6 @@
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"/>
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,7 +20,6 @@
         android:layout_marginRight="16dp"
         android:id="@+id/mapCancel"
         android:onClick="geoFence"/>
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,15 +29,21 @@
         android:layout_margin="16dp"
         android:id="@+id/mapSave"
         android:onClick="geoFence"/>
-
     <SeekBar
         android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:layout_above="@id/mapCancel"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="32dp"
+        android:layout_alignLeft="@id/mapSave"
+        android:layout_alignRight="@id/mapCancel"
         android:id="@+id/mapRadius"
-        android:max="25"
-        />
-
+        android:max="25"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Radius"
+        android:id="@+id/lblRadius"
+        android:layout_above="@id/mapRadius"
+        android:layout_alignLeft="@id/mapRadius"
+        android:textColor="@color/rav_black"
+        android:layout_marginLeft="10dp"/>
 </RelativeLayout>
