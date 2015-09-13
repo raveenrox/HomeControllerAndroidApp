@@ -79,7 +79,6 @@ public class SplashScreenActivity extends Activity {
                                     try {
                                         Thread.sleep(3000);
                                         if(helperDataClass.serverOnline) {
-                                            //helperClass.checkStatus();
                                             helperClass.getStatus();
                                         }
                                     }catch (InterruptedException ex)
@@ -90,6 +89,7 @@ public class SplashScreenActivity extends Activity {
                             }.start();
                         }catch (SocketTimeoutException ex) {
                             Toast.makeText(SplashScreenActivity.this, "Connection to the server timed out", Toast.LENGTH_LONG).show();
+                            Log.d("RAV", "Connection Timed Out SplashScreen");
                             helperDataClass.serverOnline = false;
                         }
                         catch (Exception ex)

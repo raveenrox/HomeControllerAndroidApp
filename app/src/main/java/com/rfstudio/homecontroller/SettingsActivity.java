@@ -1,11 +1,18 @@
 package com.rfstudio.homecontroller;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -236,22 +243,9 @@ public class SettingsActivity extends AppCompatActivity
                 Intent intent = new Intent(this, GeoFencingActivity.class);
                 startActivity(intent);
                 break;
-
-            // FIXME: 9/11/2015 notification button
-           /* case R.id.btnNotif:
-                Intent intentSettings = new Intent(this, GeoFencingActivity.class);
-                PendingIntent pendingIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intentSettings, 0);
-                Notification.Builder builder = new Notification.Builder(this);
-                builder.setSmallIcon(R.mipmap.ic_launcher);
-                builder.setContentTitle("Near Home");
-                builder.setContentText("Do you want to open the gate?");
-                builder.addAction(R.drawable.notification_template_icon_bg, "Open",pendingIntent);
-
-                //builder.setContentIntent(resultPendingIntent);
-                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                notificationManager.notify(0, builder.build());
-
-                break;*/
+            case R.id.btnNotif:
+                sendNotification("ENTER:HOME");
+                break;
         }
     }
 
@@ -315,5 +309,47 @@ public class SettingsActivity extends AppCompatActivity
                 //Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
             }
         }.execute(null, null, null);
+    }
+
+    private void sendNotification(String notificationDetails) {
+        Intent intentMain = new Intent(this, SplashScreenActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intentMain, 0);
+        Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(MainActivity.class);
+        stackBuilder.addNextIntent(notificationIntent);
+        PendingIntent notificationPendingIntent =
+                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        if(notificationDetails.equals("ENTER:HOME")) {
+            intentMain.putExtra("type", "OPEN");
+            builder.setSmallIcon(R.mipmap.ic_launcher)
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(),
+                            R.mipmap.ic_launcher))
+                    .setColor(Color.RED)
+                    .setContentTitle("Entering Home Area")
+                    .setContentText("Do you want to open the gate?")
+                    .addAction(R.drawable.notification_template_icon_bg, "Open Gate", pendingIntent)
+                    .setContentIntent(notificationPendingIntent);
+        } else {
+            intentMain.putExtra("type", "CLOSE");
+            builder.setSmallIcon(R.mipmap.ic_launcher)
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(),
+                            R.mipmap.ic_launcher))
+                    .setColor(Color.RED)
+                    .setContentTitle("Exiting Home Area")
+                    .setContentText("Do you want to close the gate?")
+                    .addAction(R.drawable.notification_template_icon_bg, "Close Gate", pendingIntent)
+                    .setContentIntent(notificationPendingIntent);
+
+        }
+        builder.setAutoCancel(true);
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        Notification notification = builder.build();
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        mNotificationManager.notify(0, notification);
+
     }
 }

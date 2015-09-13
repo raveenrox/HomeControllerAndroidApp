@@ -154,8 +154,8 @@ public class HelperClass {
                     connection.setRequestProperty("USER-AGENT", "Mozilla/5.0");
                     connection.setRequestProperty("ACCEPT-LANGUAGE", "en-US,en;0.5");
                     connection.setDoOutput(true);
-                    connection.setReadTimeout(2000);
-                    connection.setConnectTimeout(2000);
+                    connection.setReadTimeout(5000);
+                    connection.setConnectTimeout(5000);
                     DataOutputStream dStream = new DataOutputStream(connection.getOutputStream());
                     dStream.writeBytes(urlParameters);
                     dStream.flush();

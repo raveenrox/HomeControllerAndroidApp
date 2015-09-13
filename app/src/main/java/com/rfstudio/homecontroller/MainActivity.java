@@ -34,8 +34,6 @@ public class MainActivity extends Activity {
 
         helperDataClass = (HelperDataClass) getIntent().getSerializableExtra("helper");
         helperClass = new HelperClass(this, helperDataClass);
-        // TODO: 8/22/2015 remove
-        //helperClass.decode();
         helperClass.parse();
         images = new ArrayList<>();
         images = helperClass.images;
@@ -58,8 +56,6 @@ public class MainActivity extends Activity {
             TextView lblWelcome = (TextView) findViewById(R.id.lblWelcome);
             lblWelcome.setText("Welcome " + name + ",");
         }
-
-
     }
 
     public void navAct(View view)

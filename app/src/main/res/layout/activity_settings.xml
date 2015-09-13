@@ -25,12 +25,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-         <!--   <Button
+           <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/btnNotif"
                 android:text="Notification"
-                android:onClick="settingsAct"/> -->
+                android:onClick="settingsAct"/>
             <TextView
                 android:text="Name"
                 android:layout_width="wrap_content"

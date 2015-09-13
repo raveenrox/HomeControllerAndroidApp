@@ -11,9 +11,9 @@ android {
         applicationId "com.rfstudio.homecontroller"
         minSdkVersion 21
         targetSdkVersion 21
-        versionName '1.12'
+        versionName '1.13'
         signingConfig signingConfigs.config
-        versionCode 5
+        versionCode 6
     }
     buildTypes {
         release {
