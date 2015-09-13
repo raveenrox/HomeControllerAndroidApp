@@ -2,17 +2,12 @@ package com.rfstudio.homecontroller;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
-
-import com.google.android.gms.gcm.Task;
-
 import java.util.ArrayList;
-import java.util.zip.Inflater;
 
 /**
  * Created by Raveen on 9/9/2015.
@@ -73,10 +68,7 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.TableViewHol
         public void setData(int position, ArrayList<String> commandNames, ArrayList<String> commandNos, boolean on, boolean off, boolean none)
         {
             command.setText(commandNames.get(position).toString());
-            /*onButton.setTag(commandNos.get(position).toString());
-            offButton.setTag(commandNos.get(position).toString());
-            noneButton.setTag(commandNos.get(position).toString());
-            */
+
             onButton.setTag(position);
             offButton.setTag(position);
             noneButton.setTag(position);

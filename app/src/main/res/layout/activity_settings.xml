@@ -5,7 +5,10 @@
     android:layout_height="match_parent"
     tools:context="com.rfstudio.homecontroller.SettingsActivity"
     android:orientation="vertical"
-    android:weightSum="10">
+    android:weightSum="10"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:descendantFocusability="beforeDescendants">
 
 
     <ScrollView
@@ -92,26 +95,26 @@
                 android:onClick="registerGCM"/>
             <TextView
                 android:layout_width="wrap_content"
-                android:text="Geo Fencing"
+                android:text="Geo Fence"
                 android:layout_height="wrap_content" />
-            <Button
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/btnGeoFence"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
-                android:text="Select Geo Fence"
-                android:onClick="settingsAct"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:text="Monitor Geo Fence"
-                android:layout_height="wrap_content" />
-            <ToggleButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="false"
-                android:id="@+id/geoFenceState"
-                android:onClick="geoFenceButtonHandler"/>
-
+                android:orientation="horizontal">
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btnGeoFence"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:text="Select Geo Fence"
+                    android:onClick="settingsAct"/>
+                <ToggleButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:id="@+id/geoFenceState"
+                    android:onClick="geoFenceButtonHandler"/>
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
     <LinearLayout

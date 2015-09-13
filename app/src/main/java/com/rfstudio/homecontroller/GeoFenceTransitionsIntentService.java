@@ -1,6 +1,7 @@
 package com.rfstudio.homecontroller;
 
 import android.app.IntentService;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -63,10 +64,12 @@ public class GeoFenceTransitionsIntentService extends IntentService {
         }
         String triggeringGeoFencesIdsString = TextUtils.join(", ",  triggeringGeoFencesIdsList);
 
-        return geoFenceTransitionString + ": " + triggeringGeoFencesIdsString;
+        return geoFenceTransitionString + ":" + triggeringGeoFencesIdsString;
     }
 
     private void sendNotification(String notificationDetails) {
+        Intent intent = new Intent(this, SplashScreenActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
 
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
@@ -75,27 +78,43 @@ public class GeoFenceTransitionsIntentService extends IntentService {
         PendingIntent notificationPendingIntent =
                 stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-        builder.setSmallIcon(R.mipmap.ic_launcher)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(),
-                        R.mipmap.ic_launcher))
-                .setColor(Color.RED)
-                .setContentTitle(notificationDetails)
-                .setContentText("Notif Sample")
-                .setContentIntent(notificationPendingIntent);
+        if(notificationDetails.equals("ENTER:HOME")) {
+            intent.putExtra("type", "OPEN");
+            builder.setSmallIcon(R.mipmap.ic_launcher)
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(),
+                            R.mipmap.ic_launcher))
+                    .setColor(Color.RED)
+                    .setContentTitle("Entering Home Area")
+                    .setContentText("Do you want to open the gate?")
+                    .addAction(R.drawable.notification_template_icon_bg, "Open Gate", pendingIntent)
+                    .setContentIntent(notificationPendingIntent);
+        } else {
+            intent.putExtra("type", "CLOSE");
+            builder.setSmallIcon(R.mipmap.ic_launcher)
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(),
+                            R.mipmap.ic_launcher))
+                    .setColor(Color.RED)
+                    .setContentTitle("Exiting Home Area")
+                    .setContentText("Do you want to close the gate?")
+                    .addAction(R.drawable.notification_template_icon_bg, "Close Gate", pendingIntent)
+                    .setContentIntent(notificationPendingIntent);
+
+        }
         builder.setAutoCancel(true);
 
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        mNotificationManager.notify(0, builder.build());
+        Notification notification = builder.build();
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        mNotificationManager.notify(0, notification);
     }
 
     private String getTransitionString(int transitionType) {
         switch (transitionType) {
             case Geofence.GEOFENCE_TRANSITION_ENTER:
-                return "Entered Area";
+                return "ENTER";
             case Geofence.GEOFENCE_TRANSITION_EXIT:
-                return "Area Exited";
+                return "EXIT";
             default:
                 return "Unknown Transition";
         }

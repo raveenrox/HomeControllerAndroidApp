@@ -79,7 +79,7 @@ public class SettingsActivity extends AppCompatActivity
         geoFencePendingIntent = null;
 
         geoFencesAdded = preferences.getBoolean("geoFenceState", false);
-        geoFenceState.setChecked(geoFencesAdded);
+        geoFenceState.setChecked(!geoFencesAdded);
 
         populateGeoFenceList();
         buildGoogleApiClient();
@@ -140,9 +140,10 @@ public class SettingsActivity extends AppCompatActivity
         try {
             if(preferences.getBoolean("geoFenceState", false)) {
                 LocationServices.GeofencingApi.addGeofences(googleApiClient, getGeoFencingRequest(), getGeoFencePendingIntent()).setResultCallback(this);
-
+                Log.d(TAG, "GeoFence Added");
             } else {
                 LocationServices.GeofencingApi.removeGeofences(googleApiClient, getGeoFencePendingIntent()).setResultCallback(this);
+                Log.d(TAG, "GeoFence Removed");
             }
         } catch (SecurityException securityException) {
             logSecurityException(securityException);
@@ -158,7 +159,7 @@ public class SettingsActivity extends AppCompatActivity
             case GeofenceStatusCodes.GEOFENCE_TOO_MANY_PENDING_INTENTS:
                 return "Too Many Pending Intents";
             default:
-                return "Unkown Error";
+                return "Unknown Error";
         }
     }
 
@@ -172,13 +173,13 @@ public class SettingsActivity extends AppCompatActivity
             geoFencesAdded = !geoFencesAdded;
             SharedPreferences.Editor editor = preferences.edit();
             editor.putBoolean("geoFenceState", geoFencesAdded);
-            editor.commit();
+            editor.apply();
 
-            geoFenceState.setChecked(geoFencesAdded);
+            geoFenceState.setChecked(!geoFencesAdded);
 
             Toast.makeText(
                     this,
-                    (geoFencesAdded ? "Geo Fence Added" : "Geo Fence Removed"),
+                    (!geoFencesAdded ? "Geo Fence Added" : "Geo Fence Removed"),
                     Toast.LENGTH_SHORT
             ).show();
         } else {
@@ -197,7 +198,9 @@ public class SettingsActivity extends AppCompatActivity
 
     public void populateGeoFenceList() {
         HashMap<String, LatLng> LOCATIONS = new HashMap<String, LatLng>();
-        LOCATIONS.put("HOME", new LatLng(7.2804603,79.8668137));
+        LatLng position = new LatLng(Double.parseDouble(preferences.getString("latitude", Double.toString(7.280066))),
+                Double.parseDouble(preferences.getString("longitude", Double.toString(79.8666673))));
+        LOCATIONS.put("HOME", position);
         for (Map.Entry<String, LatLng> entry : LOCATIONS.entrySet()) {
             geoFenceList.add(new Geofence.Builder()
                     .setRequestId(entry.getKey())
@@ -206,7 +209,7 @@ public class SettingsActivity extends AppCompatActivity
                             entry.getValue().longitude,
                             preferences.getInt("radius", 500)
                     )
-                    .setExpirationDuration(43200000)
+                    .setExpirationDuration(Geofence.NEVER_EXPIRE)
                     .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
                             Geofence.GEOFENCE_TRANSITION_EXIT)
                     .build());
@@ -236,15 +239,18 @@ public class SettingsActivity extends AppCompatActivity
 
             // FIXME: 9/11/2015 notification button
            /* case R.id.btnNotif:
+                Intent intentSettings = new Intent(this, GeoFencingActivity.class);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intentSettings, 0);
                 Notification.Builder builder = new Notification.Builder(this);
                 builder.setSmallIcon(R.mipmap.ic_launcher);
                 builder.setContentTitle("Near Home");
                 builder.setContentText("Do you want to open the gate?");
+                builder.addAction(R.drawable.notification_template_icon_bg, "Open",pendingIntent);
 
                 //builder.setContentIntent(resultPendingIntent);
                 NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 notificationManager.notify(0, builder.build());
-test
+
                 break;*/
         }
     }
@@ -273,7 +279,7 @@ test
         txtUsername.setText(preferences.getString("username",""));
         txtPassword.setText(preferences.getString("password",""));
         txtUrl.setText(preferences.getString("url", ""));
-        geoFenceState.setChecked(preferences.getBoolean("geoFenceState", false));
+        geoFenceState.setChecked(!preferences.getBoolean("geoFenceState", false));
     }
 
     public void registerGCM(View view) {
@@ -284,7 +290,7 @@ test
         new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void... params) {
-                String msg = "";
+                String msg;
                 try {
                     if(gcm==null) {
                         gcm = GoogleCloudMessaging.getInstance(getApplicationContext());

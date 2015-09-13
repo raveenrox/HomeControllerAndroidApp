@@ -5,18 +5,14 @@ import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.provider.SyncStateContract;
 import android.support.v4.app.NavUtils;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.SeekBar;
 import android.widget.Toast;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -24,8 +20,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 public class GeoFencingActivity extends Activity implements OnMapReadyCallback {
 
@@ -37,7 +31,7 @@ public class GeoFencingActivity extends Activity implements OnMapReadyCallback {
     private Location location;
     private Location backupLocation;
 
-    private int radius=0;
+    private int radius;
     private LatLng position;
 
     private static final String PREF_NAME = "settings";
@@ -56,6 +50,9 @@ public class GeoFencingActivity extends Activity implements OnMapReadyCallback {
         backupLocation.setLongitude(0.0);
 
         preferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+
+        radius = preferences.getInt("radius", 500);
+
         if(location==null) {
             position = new LatLng(Double.parseDouble(preferences.getString("latitude", Double.toString(backupLocation.getLatitude()))),
                     Double.parseDouble(preferences.getString("longitude", Double.toString(backupLocation.getLongitude()))));
@@ -101,19 +98,13 @@ public class GeoFencingActivity extends Activity implements OnMapReadyCallback {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_geo_fencing, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
