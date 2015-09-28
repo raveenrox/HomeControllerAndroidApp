@@ -36,7 +36,8 @@
         android:layout_alignLeft="@id/mapSave"
         android:layout_alignRight="@id/mapCancel"
         android:id="@+id/mapRadius"
-        android:max="25"/>
+        android:max="25"
+        android:progress="5"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

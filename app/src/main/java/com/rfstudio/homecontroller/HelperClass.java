@@ -62,7 +62,7 @@ public class HelperClass {
 
             File file = new File(helperDataClass.APP_PATH+helperDataClass.imageNames.get(i));
             if(!file.exists() || preferences.getInt("dbVer", 0)!=newVer) {
-                String url = "http://" + preferences.getString("url", "192.168.1.100") + "/hc/" + helperDataClass.imageNames.get(i);
+                String url = "http://" + preferences.getString("url", "192.168.1.100") + "/hc/images/" + helperDataClass.imageNames.get(i);
                 try {
                     HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
                     connection.setConnectTimeout(1000);
@@ -207,7 +207,7 @@ public class HelperClass {
 
             parser.setInput(reader);
 
-            int pos=0;
+            String pos="";
 
             String text="";
             int eventType = parser.getEventType();
@@ -226,12 +226,12 @@ public class HelperClass {
                     case XmlPullParser.END_TAG:
                         if (tagName.equalsIgnoreCase("command"))
                         {
-                            pos=Integer.parseInt(text);
+                            pos=text;
                         } else if (tagName.equalsIgnoreCase("state")) {
                             if(text.equals("1")) {
-                                helperDataClass.state.add(pos, true);
+                                helperDataClass.state.add(true);
                             } else if(text.equals("0")) {
-                                helperDataClass.state.add(pos, false);
+                                helperDataClass.state.add(false);
                             }
                         }
                         break;
@@ -305,6 +305,9 @@ public class HelperClass {
                         } else if(tagName.equalsIgnoreCase("command"))
                         {
                             child.command=text;
+                        } else if(tagName.equalsIgnoreCase("type"))
+                        {
+                            child.type=text;
                         } else if(tagName.equalsIgnoreCase("child"))
                         {
                             childList.add(child);
@@ -323,13 +326,16 @@ public class HelperClass {
                 helperDataClass.imageNames.add(i,roomList.get(i).image);
                 ArrayList<String> childNames = new ArrayList<String>();
                 ArrayList<String> commandNo = new ArrayList<String>();
+                ArrayList<String> commandType = new ArrayList<String>();
                 for(int j=0;j<roomList.get(i).children.size();j++)
                 {
                     childNames.add(j, roomList.get(i).children.get(j).childName);
                     commandNo.add(j, roomList.get(i).children.get(j).command);
+                    commandType.add(j, roomList.get(i).children.get(j).type);
                 }
                 helperDataClass.titlesChildren.add(i, childNames);
                 helperDataClass.childCommands.add(i, commandNo);
+                helperDataClass.childCommandType.add(i, commandType);
             }
 
             getImage(helperDataClass.list_length, helperDataClass.ver);

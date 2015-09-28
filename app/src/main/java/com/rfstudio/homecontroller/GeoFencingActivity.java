@@ -76,12 +76,12 @@ public class GeoFencingActivity extends Activity implements OnMapReadyCallback {
         });
 
         radiusBar = (SeekBar) findViewById(R.id.mapRadius);
-        radiusBar.setProgress((preferences.getInt("radius", 500)/100)-5);
+        radiusBar.setProgress((preferences.getInt("radius", 500) - 100) / 76);
         radiusBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                circle.setRadius((progress + 5) * 100);
-                radius = (progress + 5) * 100;
+                circle.setRadius((progress * 76) + 100);
+                radius = (progress * 76) + 100 ;
             }
 
             @Override
@@ -123,13 +123,12 @@ public class GeoFencingActivity extends Activity implements OnMapReadyCallback {
     }
 
     public void geoFence(View view) {
-        switch (view.getId())
-        {
+        switch (view.getId()) {
             case R.id.mapSave:
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("latitude",position.latitude+"");
-                editor.putString("longitude",position.longitude+"");
-                editor.putInt("radius",radius);
+                editor.putString("latitude", position.latitude + "");
+                editor.putString("longitude", position.longitude + "");
+                editor.putInt("radius", radius);
                 editor.apply();
                 Toast.makeText(this, "Position Saved", Toast.LENGTH_LONG).show();
                 NavUtils.navigateUpFromSameTask(this);

@@ -6,6 +6,7 @@ package com.rfstudio.homecontroller;
 public class Child {
     String childName;
     String command;
+    String type;
     boolean state;
 
 }

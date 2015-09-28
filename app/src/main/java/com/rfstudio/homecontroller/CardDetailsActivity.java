@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -151,7 +152,17 @@ public class CardDetailsActivity extends Activity {
     {
         int newStatus=0;
         try{
-            if(helperDataClass.state.get(Integer.parseInt(view.getTag().toString())))
+            int no=0;
+            for (int i=0; i<commandNum.size(); i++)
+            {
+                if(commandNum.get(i).equals(view.getTag().toString()))
+                {
+                    Log.d("RAV", i+", "+view.getTag().toString());
+                    no=i;
+                    break;
+                }
+            }
+            if(helperDataClass.state.get(no))
             {
                 newStatus=0;
             }else {
@@ -170,7 +181,6 @@ public class CardDetailsActivity extends Activity {
             public void run() {
                 try {
                     Thread.sleep(3000);
-                    //helperClass.checkStatus();
                     helperClass.getStatus();
                     myActivity.runOnUiThread(new Runnable()
                     {
@@ -178,7 +188,17 @@ public class CardDetailsActivity extends Activity {
                         public void run()
                         {
                             try {
-                                if (helperDataClass.state.get(Integer.parseInt(view.getTag().toString()))) {
+                                int no=0;
+                                for (int i=0; i<commandNum.size(); i++)
+                                {
+                                    if(commandNum.get(i).equals(view.getTag().toString()))
+                                    {
+                                        Log.d("RAV", i+", "+view.getTag().toString());
+                                        no=i;
+                                        break;
+                                    }
+                                }
+                                if (helperDataClass.state.get(no)) {
                                     textView.setBackground(getDrawable(R.drawable.ripple_effect_cd_on));
                                     textView.setTextColor(getResources().getColor(R.color.rav_black));
                                 } else {

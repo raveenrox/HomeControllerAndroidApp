@@ -2,6 +2,7 @@ package com.rfstudio.homecontroller;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -75,8 +76,18 @@ public class CardDetailsAdapter extends RecyclerView.Adapter<CardDetailsAdapter.
 
         public void setState(int i, ArrayList<Boolean> state)
         {
+            int no=0;
+            for (int j=0; j<command.size(); j++)
+            {
+                if(command.get(i).equals(command.get(i)))
+                {
+                    Log.d("RAV", i + ", " + command.get(i));
+                    no=j;
+                    break;
+                }
+            }
             try {
-                if (state.get(Integer.parseInt(command.get(i)))) {
+                if (state.get(no)) {
 
                     rowTitle.setBackground(context.getDrawable(R.drawable.ripple_effect_cd_on));
                     rowTitle.setTextColor(context.getResources().getColor(R.color.rav_black));

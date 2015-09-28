@@ -27,6 +27,7 @@ public class HelperDataClass implements Serializable {
     ArrayList<String> imageNames = new ArrayList<String>();
     ArrayList<ArrayList<String>> titlesChildren = new ArrayList<ArrayList<String>>();
     ArrayList<ArrayList<String>> childCommands = new ArrayList<ArrayList<String>>();
+    ArrayList<ArrayList<String>> childCommandType = new ArrayList<ArrayList<String>>();
     ArrayList<Boolean> status = new ArrayList<Boolean>();
 
     ArrayList<Boolean> state= new ArrayList<Boolean>();
